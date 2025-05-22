@@ -1,8 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Home = () => {
   // 移动端菜单状态
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // 当前活动链接
+  const [activeSection, setActiveSection] = useState('hero');
+  
+  // 滚动监听函数
+  useEffect(() => {
+    const handleScroll = () => {
+      // 获取所有部分和当前滚动位置
+      const aboutSection = document.getElementById('about');
+      const toursSection = document.getElementById('tours');
+      const featuresSection = document.getElementById('features');
+      const destinationsSection = document.getElementById('destinations');
+      const heroSection = document.getElementById('hero');
+      
+      // 获取当前滚动位置和页面尺寸
+      const scrollPosition = window.scrollY + 150;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollBottom = window.scrollY + windowHeight;
+      
+      // 特别处理关于我们部分 - 当滚动到接近页面底部时
+      if (documentHeight - scrollBottom < 200 || 
+          (aboutSection && scrollPosition >= aboutSection.offsetTop - 100)) {
+        setActiveSection('about');
+      } else if (toursSection && scrollPosition >= toursSection.offsetTop) {
+        setActiveSection('tours');
+      } else if (featuresSection && scrollPosition >= featuresSection.offsetTop) {
+        setActiveSection('features');
+      } else if (destinationsSection && scrollPosition >= destinationsSection.offsetTop) {
+        setActiveSection('destinations');
+      } else {
+        setActiveSection('hero');
+      }
+    };
+    
+    // 添加滚动事件监听，使用防抖函数减少触发频率
+    const debouncedHandleScroll = debounce(handleScroll, 50);
+    window.addEventListener('scroll', debouncedHandleScroll);
+    
+    // 初始调用一次以设置初始状态
+    handleScroll();
+    
+    // 清理函数
+    return () => {
+      window.removeEventListener('scroll', debouncedHandleScroll);
+    };
+  }, []);
+  
+  // 防抖函数定义
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        func.apply(context, args);
+      }, wait);
+    };
+  }
   
   // 热门目的地数据
   const featuredDestinations = [
@@ -69,11 +128,12 @@ const Home = () => {
           {/* 桌面端导航 */}
           <nav className="hidden md:block flex-1">
             <ul className="flex gap-8 justify-start pl-8">
-              <li><a href="#" className="text-blue-500 font-medium border-b-2 border-blue-500 pb-1">首页</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500 pb-1 transition duration-300">目的地</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500 pb-1 transition duration-300">旅游路线</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500 pb-1 transition duration-300">特色体验</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500 pb-1 transition duration-300">关于我们</a></li>
+              <li><a href="#hero" className={`${activeSection === 'hero' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>首页</a></li>
+              <li><a href="#destinations" className={`${activeSection === 'destinations' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>目的地</a></li>
+              <li><a href="#features" className={`${activeSection === 'features' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>特色体验</a></li>
+              <li><a href="#tours" className={`${activeSection === 'tours' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>旅游路线</a></li>
+             
+              <li><a href="#about" className={`${activeSection === 'about' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>关于我们</a></li>
             </ul>
           </nav>
 
@@ -104,11 +164,11 @@ const Home = () => {
         <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'} px-4 py-2 pb-4 bg-white`}>
           <nav>
             <ul className="space-y-3">
-              <li><a href="#" className="block text-blue-500 font-medium">首页</a></li>
-              <li><a href="#" className="block text-gray-700 hover:text-blue-500 transition duration-300">目的地</a></li>
-              <li><a href="#" className="block text-gray-700 hover:text-blue-500 transition duration-300">旅游路线</a></li>
-              <li><a href="#" className="block text-gray-700 hover:text-blue-500 transition duration-300">特色体验</a></li>
-              <li><a href="#" className="block text-gray-700 hover:text-blue-500 transition duration-300">关于我们</a></li>
+              <li><a href="#hero" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'hero' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>首页</a></li>
+              <li><a href="#destinations" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'destinations' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>目的地</a></li>
+              <li><a href="#tours" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'tours' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>旅游路线</a></li>
+              <li><a href="#features" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'features' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>特色体验</a></li>
+              <li><a href="#about" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'about' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>关于我们</a></li>
             </ul>
             <div className="flex gap-3 mt-4">
               <button className="flex-1 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition duration-300">登录</button>
@@ -121,15 +181,20 @@ const Home = () => {
       {/* 内容区域 */}
       <main className="flex-1">
         {/* 英雄区域 */}
-        <section className="h-[80vh] bg-cover bg-center flex items-center justify-center text-white text-center px-4" style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd)' }}>
+        <section id="hero" className="h-[80vh] bg-cover bg-center flex items-center justify-center text-white text-center px-4 scroll-mt-20" style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd)' }}>
           <div className="max-w-3xl">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">探索世界的每一个角落</h2>
-            <p className="text-xl mb-8">让我们带您踏上一段难忘的旅程，发现世界各地的自然奇观和文化瑰宝</p>        
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg">
+              <span className="block">探索世界的</span>
+              <span className="block">每一个角落</span>
+            </h2>
+            <p className="text-lg md:text-xl mb-10 max-w-xl mx-auto font-light tracking-wide leading-relaxed text-gray-100 drop-shadow-md">
+            Your China Adventure Begins Here
+            </p>
           </div>
         </section>
 
         {/* 热门目的地 */}
-        <section className="py-20 px-5 md:px-10">
+        <section id="destinations" className="py-20 px-5 md:px-10 scroll-mt-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">热门目的地</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">发现令人惊叹的旅游胜地，开启您的下一次冒险</p>
@@ -155,7 +220,7 @@ const Home = () => {
         </section>
 
         {/* 我们的优势 */}
-        <section className="py-20 px-5 md:px-10 bg-gray-50">
+        <section id="features" className="py-20 px-5 md:px-10 bg-gray-50 scroll-mt-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">为什么选择我们？</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">我们致力于为您提供最优质的旅行体验</p>
@@ -185,7 +250,7 @@ const Home = () => {
         </section>
 
         {/* 热门旅游路线 */}
-        <section className="py-20 px-5 md:px-10">
+        <section id="tours" className="py-20 px-5 md:px-10 scroll-mt-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">热门旅游路线</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">精心设计的行程，带您领略目的地的精彩</p>
@@ -265,10 +330,10 @@ const Home = () => {
       </main>
 
       {/* 尾部 */}
-      <footer className="bg-gray-900 text-gray-300 pt-16 pb-6 px-5 md:px-10">
+      <footer id="about" className="bg-gray-900 text-gray-300 pt-16 pb-6 px-5 md:px-10 scroll-mt-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <h3 className="text-xl font-bold text-white mb-6">锐景旅游</h3>
+            <h3 className="text-xl font-bold text-white mb-6">China Tour</h3>
             <p className="mb-6 text-gray-400">我们致力于为您提供难忘的旅行体验，探索世界各地的自然奇观和文化瑰宝。</p>
             <div className="flex gap-4">
               <a href="#" className="text-gray-400 hover:text-white transition duration-300">微信</a>
