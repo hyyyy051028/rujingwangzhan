@@ -1,6 +1,6 @@
 export default function FooterHome() {
   return (
-    <footer className="bg-gray-900 text-gray-300 pt-16 pb-6 px-5 md:px-10">
+    <footer id="about" className="bg-gray-900 text-gray-300 pt-16 pb-6 px-5 md:px-10 scroll-mt-20">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
         <div>
           <h3 className="text-xl font-bold text-white mb-6">China Tour</h3>

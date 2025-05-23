@@ -1,68 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const Home = () => {
-  // 移动端菜单状态
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // 当前活动链接
-  const [activeSection, setActiveSection] = useState('hero');
-  
-  // 滚动监听函数
-  useEffect(() => {
-    const handleScroll = () => {
-      // 获取所有部分和当前滚动位置
-      const aboutSection = document.getElementById('about');
-      const toursSection = document.getElementById('tours');
-      const featuresSection = document.getElementById('features');
-      const destinationsSection = document.getElementById('destinations');
-      const heroSection = document.getElementById('hero');
-      
-      // 获取当前滚动位置和页面尺寸
-      const scrollPosition = window.scrollY + 150;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollBottom = window.scrollY + windowHeight;
-      
-      // 特别处理关于我们部分 - 当滚动到接近页面底部时
-      if (documentHeight - scrollBottom < 200 || 
-          (aboutSection && scrollPosition >= aboutSection.offsetTop - 100)) {
-        setActiveSection('about');
-      } else if (toursSection && scrollPosition >= toursSection.offsetTop) {
-        setActiveSection('tours');
-      } else if (featuresSection && scrollPosition >= featuresSection.offsetTop) {
-        setActiveSection('features');
-      } else if (destinationsSection && scrollPosition >= destinationsSection.offsetTop) {
-        setActiveSection('destinations');
-      } else {
-        setActiveSection('hero');
-      }
-    };
-    
-    // 添加滚动事件监听，使用防抖函数减少触发频率
-    const debouncedHandleScroll = debounce(handleScroll, 50);
-    window.addEventListener('scroll', debouncedHandleScroll);
-    
-    // 初始调用一次以设置初始状态
-    handleScroll();
-    
-    // 清理函数
-    return () => {
-      window.removeEventListener('scroll', debouncedHandleScroll);
-    };
-  }, []);
-  
-  // 防抖函数定义
-  function debounce(func, wait) {
-    let timeout;
-    return function() {
-      const context = this;
-      const args = arguments;
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        func.apply(context, args);
-      }, wait);
-    };
-  }
-  
+
   // 热门目的地数据
   const featuredDestinations = [
     {
@@ -117,79 +56,19 @@ const Home = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* 顶栏 */}
-      <header className="sticky top-0 z-50 bg-white shadow-md">
-        <div className="flex justify-between items-center px-5 py-4">
-          <div>
-            <h1 className="text-2xl font-bold text-blue-500">China Tour</h1>
-          </div>
-          
-          {/* 桌面端导航 */}
-          <nav className="hidden md:block flex-1">
-            <ul className="flex gap-8 justify-start pl-8">
-              <li><a href="#hero" className={`${activeSection === 'hero' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>首页</a></li>
-              <li><a href="#destinations" className={`${activeSection === 'destinations' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>目的地</a></li>
-              <li><a href="#features" className={`${activeSection === 'features' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>特色体验</a></li>
-              <li><a href="#tours" className={`${activeSection === 'tours' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>旅游路线</a></li>
-             
-              <li><a href="#about" className={`${activeSection === 'about' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>关于我们</a></li>
-            </ul>
-          </nav>
-
-          {/* 桌面端按钮 */}
-          <div className="hidden md:flex gap-4">
-            <button className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition duration-300">登录</button>
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">注册</button>
-          </div>
-          
-          {/* 移动端汉堡菜单按钮 */}
-          <button 
-            className="md:hidden text-gray-700 focus:outline-none" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
-        </div>
-        
-        {/* 移动端折叠菜单 */}
-        <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'} px-4 py-2 pb-4 bg-white`}>
-          <nav>
-            <ul className="space-y-3">
-              <li><a href="#hero" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'hero' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>首页</a></li>
-              <li><a href="#destinations" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'destinations' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>目的地</a></li>
-              <li><a href="#tours" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'tours' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>旅游路线</a></li>
-              <li><a href="#features" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'features' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>特色体验</a></li>
-              <li><a href="#about" onClick={() => setMobileMenuOpen(false)} className={`block ${activeSection === 'about' ? 'text-blue-500 font-medium' : 'text-gray-700 hover:text-blue-500 transition duration-300'}`}>关于我们</a></li>
-            </ul>
-            <div className="flex gap-3 mt-4">
-              <button className="flex-1 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition duration-300">登录</button>
-              <button className="flex-1 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300">注册</button>
-            </div>
-          </nav>
-        </div>
-      </header>
-
+    < >
       {/* 内容区域 */}
       <main className="flex-1">
         {/* 英雄区域 */}
-        <section id="hero" className="h-[80vh] bg-cover bg-center flex items-center justify-center text-white text-center px-4 scroll-mt-20" style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd)' }}>
+        <section id="hero" className="
+                h-[45vh]  md:h-[80vh] bg-cover bg-center flex items-center 
+                justify-center text-white text-center px-4 scroll-mt-20"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd)'
+          }}>
           <div className="max-w-3xl">
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg">
-              <span className="block">探索世界的</span>
-              <span className="block">每一个角落</span>
-            </h2>
-            <p className="text-lg md:text-xl mb-10 max-w-xl mx-auto font-light tracking-wide leading-relaxed text-gray-100 drop-shadow-md">
-            Your China Adventure Begins Here
-            </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">探索世界的每一个角落</h2>
+            <p className="text-xl mb-8">让我们带您踏上一段难忘的旅程，发现世界各地的自然奇观和文化瑰宝</p>
           </div>
         </section>
 
@@ -328,56 +207,7 @@ const Home = () => {
           </div>
         </section>
       </main>
-
-      {/* 尾部 */}
-      <footer id="about" className="bg-gray-900 text-gray-300 pt-16 pb-6 px-5 md:px-10 scroll-mt-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          <div>
-            <h3 className="text-xl font-bold text-white mb-6">China Tour</h3>
-            <p className="mb-6 text-gray-400">我们致力于为您提供难忘的旅行体验，探索世界各地的自然奇观和文化瑰宝。</p>
-            <div className="flex gap-4">
-              <a href="#" className="text-gray-400 hover:text-white transition duration-300">微信</a>
-              <a href="#" className="text-gray-400 hover:text-white transition duration-300">微博</a>
-              <a href="#" className="text-gray-400 hover:text-white transition duration-300">抖音</a>
-              <a href="#" className="text-gray-400 hover:text-white transition duration-300">小红书</a>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-white mb-6">热门目的地</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">桂林</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">张家界</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">九寨沟</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">西藏</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">云南</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">海南</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-white mb-6">旅游资源</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">旅游攻略</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">目的地指南</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">旅行博客</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">常见问题</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition duration-300">旅行保险</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-white mb-6">联系我们</h3>
-            <ul className="space-y-3 text-gray-400">
-              <li>📞 客服热线：400-123-4567</li>
-              <li>📧 邮箱：info@rujing.com</li>
-              <li>🏢 地址：北京市朝阳区锐景大厦</li>
-              <li>⏰ 工作时间：周一至周日 9:00-21:00</li>
-            </ul>
-          </div>
-        </div>
-        <div className="text-center pt-8 border-t border-gray-800 text-gray-500">
-          <p>© 2025 锐景旅游 版权所有 | 京ICP备12345678号</p>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 };
 
