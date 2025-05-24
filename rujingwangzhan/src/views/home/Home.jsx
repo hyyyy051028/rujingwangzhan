@@ -1,4 +1,5 @@
 import React from 'react';
+import CommentSection from '../../components/CommentSection';
 
 const Home = () => {
 
@@ -194,6 +195,9 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        {/* 评论区域 */}
+        <CommentSection />
 
         {/* 订阅区域 */}
         <section className="py-20 px-5 text-center text-white bg-cover bg-center" style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://images.unsplash.com/photo-1469854523086-cc02fe5d8800)' }}>

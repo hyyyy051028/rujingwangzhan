@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from './LanguageSwitcher'
 
 export default function HeaderHome() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token') || !!sessionStorage.getItem('token'));
   const [userData, setUserData] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -83,7 +86,7 @@ export default function HeaderHome() {
     };
     
     // 添加滚动事件监听，使用防抖函数减少触发频率
-    const debouncedHandleScroll = debounce(handleScroll, 50);
+    const debouncedHandleScroll = debounce(handleScroll, 25);
     window.addEventListener('scroll', debouncedHandleScroll);
     
     // 初始调用一次以设置初始状态
@@ -143,16 +146,19 @@ export default function HeaderHome() {
         {/* 桌面端导航 */}
         <nav className="hidden md:block flex-1">
           <ul className="flex gap-8 justify-start pl-8">
-            <li><a href="#hero" className={`${activeSection === 'hero' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>首页</a></li>
-            <li><a href="#destinations" className={`${activeSection === 'destinations' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>目的地</a></li>
-            <li><a href="#features" className={`${activeSection === 'features' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>特色体验</a></li>
-            <li><a href="#tours" className={`${activeSection === 'tours' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>旅游路线</a></li>
-            <li><a href="#about" className={`${activeSection === 'about' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>关于我们</a></li>
+            <li><a href="#hero" className={`${activeSection === 'hero' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>{t('common.home')}</a></li>
+            <li><a href="#destinations" className={`${activeSection === 'destinations' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>{t('header.destinations')}</a></li>
+            <li><a href="#features" className={`${activeSection === 'features' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>{t('header.features')}</a></li>
+            <li><a href="#tours" className={`${activeSection === 'tours' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>{t('header.tours')}</a></li>
+            <li><a href="#about" className={`${activeSection === 'about' ? 'text-blue-500 border-b-2 border-blue-500' : 'text-gray-700 hover:text-blue-500 hover:border-b-2 hover:border-blue-500'} font-medium pb-1 transition duration-300`}>{t('common.about')}</a></li>
           </ul>
         </nav>
 
         {/* 桌面端按钮 */}
         <div className="hidden md:flex gap-4 items-center">
+          {/* 语言切换器 */}
+          <LanguageSwitcher />
+          
           {isLoggedIn ? (
             <div className="relative">
               <button 
@@ -162,7 +168,7 @@ export default function HeaderHome() {
                 <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center">
                   {userData?.username ? userData.username.charAt(0).toUpperCase() : '?'}
                 </div>
-                <span>{userData?.username || '用户'}</span>
+                <span>{userData?.username || t('comments.anonymous')}</span>
                 <svg className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -172,17 +178,17 @@ export default function HeaderHome() {
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
                   <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">{userData?.username || '用户'}</p>
+                    <p className="text-sm font-medium text-gray-900">{userData?.username || t('comments.anonymous')}</p>
                     <p className="text-xs text-gray-500 truncate">{userData?.email || ''}</p>
                   </div>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">个人资料</a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">我的订单</a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">收藏夹</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{t('common.edit')} {t('common.profile')}</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{t('common.myOrders')}</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{t('common.favorites')}</a>
                   <button 
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                   >
-                    退出登录
+                    {t('common.logout')}
                   </button>
                 </div>
               )}
@@ -193,13 +199,13 @@ export default function HeaderHome() {
                 onClick={() => navigate('/login')} 
                 className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 transition duration-300"
               >
-                登录
+                {t('common.login')}
               </button>
               <button 
                 onClick={() => navigate('/register')} 
                 className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
               >
-                注册
+                {t('common.register')}
               </button>
             </>
           )}
